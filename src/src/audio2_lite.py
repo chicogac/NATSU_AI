@@ -16,7 +16,7 @@ except ImportError as e:
     print(f"Deepgram SDK import failed: {e}")
 
 # Initialize Deepgram client if available
-DEEPGRAM_API_KEY = "f4082955916ed6ca9eacd3fd2c7ae127a1e4516c"
+DEEPGRAM_API_KEY = ""
 deepgram = None
 if HAS_DEEPGRAM:
     try:
