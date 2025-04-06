@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NATSU AI - Calendar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar-page.css') }}">
+</head>
+<body class="calendar-page-body">
+    <div class="calendar-page-container">
+        <header class="calendar-page-header">
+            <a href="/" class="back-to-home">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                Back to Home
+            </a>
+            <h1>My Calendar</h1>
+            <div class="calendar-actions">
+                <button id="add-event-btn" class="calendar-action-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Add Event
+                </button>
+            </div>
+        </header>
+
+        <div class="calendar-page-content">
+            <div class="calendar-main">
+                <div class="calendar-widget">
+                    <div class="calendar-header">
+                        <button id="prev-month" class="calendar-nav-btn">&lt;</button>
+                        <h3 id="current-month">Month Year</h3>
+                        <button id="next-month" class="calendar-nav-btn">&gt;</button>
+                    </div>
+                    <div class="weekdays">
+                        <div>Sun</div>
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
+                    </div>
+                    <div id="calendar-days" class="calendar-days">
+                        <!-- Calendar days will be inserted here dynamically -->
+                    </div>
+                </div>
+
+                <div id="event-details" class="event-details" style="display:none;">
+                    <button id="back-to-calendar" class="control-button">Back to Calendar</button>
+                    <h4 id="event-date">Date</h4>
+                    <div id="events-list" class="events-list">
+                        <!-- Events will be listed here -->
+                    </div>
+                    <div id="no-events" style="display:none;">No events scheduled for this day.</div>
+                </div>
+            </div>
+
+            <div class="calendar-sidebar">
+                <div class="upcoming-events-widget">
+                    <h3>Upcoming Events</h3>
+                    <div id="upcoming-events-list" class="upcoming-events-list">
+                        <!-- Upcoming events will be listed here -->
+                    </div>
+                    <div id="no-upcoming-events" style="display:none;">No upcoming events scheduled.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Event Modal -->
+        <div id="add-event-modal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Add New Event</h2>
+                <form id="add-event-form">
+                    <div class="form-group">
+                        <label for="event-name">Event Name</label>
+                        <input type="text" id="event-name" name="event-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-date">Date</label>
+                        <input type="date" id="event-date-input" name="event-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-time">Time (optional)</label>
+                        <input type="time" id="event-time" name="event-time">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="cancel-btn">Cancel</button>
+                        <button type="submit" class="save-btn">Save Event</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/calendar-page.js') }}"></script>
+</body>
+</html> 

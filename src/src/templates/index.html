@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NATSU AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Quick action buttons outside the main container -->
+    <div class="quick-actions-top">
+        <button id="calendar-button" class="quick-action-button" title="View Calendar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+        </button>
+        
+        <button id="reminders-button" class="quick-action-button" title="Reminders">
+            <div class="notification-badge" id="reminder-badge" style="display: none;">0</div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+        </button>
+        
+        <button id="health-button" class="quick-action-button" title="Health & Wellness">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+            </svg>
+        </button>
+        
+        <button id="mental-state-button" class="quick-action-button" title="Mental State Analysis">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <circle cx="12" cy="12" r="4"></circle>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Reminders popup container -->
+    <div id="reminders-container" class="reminders-container">
+        <div class="reminders-header">
+            <h3>Reminders</h3>
+            <button id="close-reminders">Close</button>
+        </div>
+        <div id="reminders-list">
+            <!-- Reminder items will be dynamically inserted here -->
+        </div>
+        <div id="no-reminders" class="no-reminders">No upcoming reminders</div>
+    </div>
+
+    <div class="main-container">
+        <!-- Left side: Text area -->
+        <div class="text-area-container">
+            <div id="response-text" class="response-text">Text area here</div>
+        </div>
+        
+        <!-- Center: AI Buddy -->
+        <div class="ai-buddy-container">
+            <div id="buddy-dot" class="dot"></div>
+        </div>
+        
+        <!-- Right side: Display area -->
+        <div class="display-area-container">
+            <div id="display-area" class="display-area">
+                <div class="placeholder-text">NATSU AI</div>
+                
+                <!-- News content (initially hidden) -->
+                <div id="news-content" class="news-content" style="display:none;">
+                    <div id="news-headlines" class="news-headlines">
+                        <!-- News cards will be inserted here dynamically -->
+                    </div>
+                    
+                    <div id="article-details" class="article-details" style="display:none;">
+                        <button id="back-to-headlines" class="control-button">Back to Headlines</button>
+                        <h4 id="article-title"></h4>
+                        <div id="article-meta" class="article-meta"></div>
+                        <div id="article-content" class="article-content"></div>
+                        
+                        <!-- New hint to inform users about asking questions -->
+                        <div class="article-question-hint">
+                            <p>Ask any question about this article in the main chat input below.</p>
+                        </div>
+                        
+                        <div id="article-analysis" class="article-analysis"></div>
+                    </div>
+                </div>
+                
+                <!-- Calendar content (initially hidden) -->
+                <div id="calendar-content" class="calendar-content" style="display:none;">
+                    <div class="calendar-header">
+                        <button id="prev-month" class="calendar-nav-btn">&lt;</button>
+                        <h3 id="current-month">Month Year</h3>
+                        <button id="next-month" class="calendar-nav-btn">&gt;</button>
+                    </div>
+                    <div class="weekdays">
+                        <div>Sun</div>
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
+                    </div>
+                    <div id="calendar-days" class="calendar-days">
+                        <!-- Calendar days will be inserted here dynamically -->
+                    </div>
+                    
+                    <div id="event-details" class="event-details" style="display:none;">
+                        <button id="back-to-calendar" class="control-button">Back to Calendar</button>
+                        <h4 id="event-date">Date</h4>
+                        <div id="events-list" class="events-list">
+                            <!-- Events will be listed here -->
+                        </div>
+                        <div id="no-events" style="display:none;">No events scheduled for this day.</div>
+                    </div>
+                    
+                    <div class="upcoming-events">
+                        <h4>Upcoming Events</h4>
+                        <div id="upcoming-events-list" class="upcoming-events-list">
+                            <!-- Upcoming events will be listed here -->
+                        </div>
+                        <div id="no-upcoming-events" style="display:none;">No upcoming events scheduled.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom: Input area -->
+        <div class="input-area-container">
+            <div class="controls">
+                <button id="start-listening" class="control-button">Start Listening</button>
+                <input type="text" id="text-input" placeholder="Type your message...">
+                <button id="send-text" class="control-button">Send</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html> 

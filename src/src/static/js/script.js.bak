@@ -1,0 +1,200 @@
+document.addEventListener('DOMContentLoaded', function() {
+    // Get reference to DOM elements
+    const startListeningBtn = document.getElementById('start-listening');
+    const sendTextBtn = document.getElementById('send-text');
+    const textInput = document.getElementById('text-input');
+    const responseText = document.getElementById('response-text');
+    const buddyDot = document.getElementById('buddy-dot');
+    const newsContent = document.getElementById('news-content');
+    const newsHeadlines = document.getElementById('news-headlines');
+    const articleDetails = document.getElementById('article-details');
+    const articleTitle = document.getElementById('article-title');
+    const articleMeta = document.getElementById('article-meta');
+    const articleContent = document.getElementById('article-content');
+    const backToHeadlinesBtn = document.getElementById('back-to-headlines');
+    const calendarContent = document.getElementById('calendar-content');
+    
+    // Variables for reminders
+    const reminderButton = document.getElementById('reminder-button');
+    const remindersContainer = document.getElementById('reminders-container');
+    const remindersList = document.getElementById('reminders-list');
+    const addReminderBtn = document.getElementById('add-reminder');
+    const reminderInput = document.getElementById('reminder-input');
+    const noRemindersText = document.getElementById('no-reminders');
+
+    // Variables to track state
+    let isProcessing = false;
+    let isContinuousConversation = false; // Track if we're in continuous conversation mode
+    let emptyAudioCount = 0; // Count consecutive empty audio files
+    let mediaRecorder = null;
+    let audioChunks = [];
+});
+
+// Clean up when audio ends
+audioElement.addEventListener('ended', () => {
+    cancelActiveTyping();
+    // Make sure all text is displayed when audio ends
+    element.textContent = text;
+    setProcessingState(false);
+    
+    // If in continuous conversation mode, start listening again
+    if (isContinuousConversation) {
+        setTimeout(() => {
+            startListening();
+        }, 500); // Short delay before starting to listen again
+    }
+});
+
+// Function to start voice listening
+async function startListening() {
+    // Prevent multiple clicks
+    if (isProcessing) {
+        return;
+    }
+    
+    try {
+        setProcessingState(true);
+        
+        // Setup recording if not already done
+        if (!mediaRecorder) {
+            const success = await setupRecording();
+            if (!success) {
+                return;
+            }
+        }
+        
+        // Update button appearance for listening state
+        startListeningBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+        startListeningBtn.classList.add('listening');
+        buddyDot.classList.add('listening');
+        
+        // If this is the first activation, enable continuous mode
+        if (!isContinuousConversation) {
+            isContinuousConversation = true;
+            responseText.textContent = 'Continuous conversation mode activated. I\'m listening...';
+        } else {
+            responseText.textContent = 'I\'m listening...';
+        }
+        
+        // Start recording
+        audioChunks = [];
+        mediaRecorder.start();
+        
+        // Automatically stop recording after 8 seconds (as a safety measure)
+        setTimeout(() => {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+        }, 8000);
+        
+        // Add a stop button functionality
+        startListeningBtn.onclick = () => {
+            // If clicked while listening, disable continuous mode
+            isContinuousConversation = false;
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+            resetListeningButton();
+            responseText.textContent = 'Continuous conversation mode deactivated.';
+        };
+        
+    } catch (error) {
+        console.error('Error:', error);
+        responseText.textContent = 'Sorry, there was an error with the speech recognition. Please try again.';
+        resetListeningButton();
+        isContinuousConversation = false;
+    }
+}
+
+// Function to send audio data to server
+async function sendAudioToServer(audioBlob) {
+    try {
+        const formData = new FormData();
+        formData.append('audio', audioBlob, 'recording.wav');
+        
+        responseText.textContent = 'Processing your speech...';
+        
+        const response = await fetch('/api/listen-upload', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.user_input === "Error" || data.user_input === "Audio file is empty") {
+            // Handle empty audio
+            if (isContinuousConversation) {
+                emptyAudioCount++;
+                
+                if (emptyAudioCount >= 3) {
+                    // Too many empty recordings, disable continuous mode
+                    isContinuousConversation = false;
+                    emptyAudioCount = 0;
+                    responseText.textContent = 'No speech detected. Continuous conversation mode deactivated.';
+                    resetListeningButton();
+                } else {
+                    // Try listening again
+                    responseText.textContent = 'I didn\'t hear anything. Please speak again...';
+                    setTimeout(() => {
+                        if (isContinuousConversation) startListening();
+                    }, 1000);
+                }
+                return;
+            } else {
+                responseText.textContent = "I couldn't understand what you said. Please try again.";
+                resetListeningButton();
+                return;
+            }
+        }
+        
+        // Reset empty audio counter on successful speech detection
+        emptyAudioCount = 0;
+        
+        // Display user message
+        if (data.user_input) {
+            displayUserMessage(data.user_input);
+        }
+        
+        // Display AI response
+        if (data.response) {
+            displayAIResponse(data.response);
+        }
+        
+        return data;
+        
+    } catch (error) {
+        console.error('Error sending audio to server:', error);
+        responseText.textContent = 'Error processing your speech. Please try again.';
+        resetListeningButton();
+        isContinuousConversation = false;
+    }
+}
+
+// Reset the listening button state
+function resetListeningButton() {
+    startListeningBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+    startListeningBtn.classList.remove('listening');
+    startListeningBtn.onclick = startListening;
+    buddyDot.classList.remove('listening');
+    setProcessingState(false);
+}
+
+// Function to display AI response
+function displayAIResponse(response) {
+    speakAndTypeText(response, responseText);
+    
+    // Check if we need to auto-restart listening after response
+    if (isContinuousConversation) {
+        audioElement.addEventListener('ended', function autoListen() {
+            // Only trigger once by removing the listener after execution
+            audioElement.removeEventListener('ended', autoListen);
+            
+            // Short delay before starting to listen again
+            setTimeout(() => {
+                if (isContinuousConversation) {
+                    startListening();
+                }
+            }, 800);
+        });
+    }
+}

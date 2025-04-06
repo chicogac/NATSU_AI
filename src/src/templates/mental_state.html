@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental State - NATSU AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Additional styles specific to the mental state page */
+        body {
+            padding: 20px;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+        
+        .mental-state-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        .top-navigation {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 20px;
+            width: 100%;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+        }
+
+        .home-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 45px;
+            height: 45px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .home-button:hover {
+            background-color: #555;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .overall-state {
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #f2f2f2;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .overall-state h2 {
+            margin: 0;
+            font-size: 1.6rem;
+            color: #333;
+        }
+
+        #primary-state {
+            font-weight: bold;
+            color: #1a73e8;
+        }
+
+        .mental-metrics {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px auto;
+            max-width: 100%;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .metric-card {
+            width: 160px;
+            height: 160px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .metric-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #333;
+            width: 100%;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .metric-value-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100px;
+            justify-content: center;
+        }
+
+        .value-bar-container {
+            margin-top: 5px;
+        }
+
+        .metric-value {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin: 6px 0;
+        }
+
+        .metric-gauge {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            margin: 10px 0;
+        }
+
+        .metric-gauge canvas {
+            position: relative;
+            z-index: 1;
+        }
+
+        .metric-description {
+            font-size: 0.85rem;
+            color: #444;
+            margin-top: 8px;
+            text-align: center;
+            width: 100%;
+            min-height: 2.6em;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-height: 1.3;
+            font-weight: 500;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            padding: 0 15px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #333;
+            word-wrap: break-word;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 40px 0;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #555;
+        }
+
+        .timestamp {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        .metrics-summary {
+            margin: 30px auto;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            text-align: left;
+            box-sizing: border-box;
+            width: 90%;
+        }
+
+        .metrics-summary h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .metrics-summary p {
+            line-height: 1.6;
+            color: #555;
+            word-wrap: break-word;
+        }
+
+        .emotion-trend {
+            width: 100%;
+            max-width: 800px;
+            height: 300px;
+            margin: 40px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .emotion-trend h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .mental-state-container {
+                padding: 10px;
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .mental-metrics {
+                padding: 0;
+                gap: 12px;
+            }
+            
+            .metric-card {
+                width: 140px;
+                height: 160px;
+                padding: 10px;
+            }
+            
+            .metric-title {
+                font-size: 1rem;
+                margin-bottom: 4px;
+            }
+            
+            .metric-value {
+                font-size: 1.4rem;
+                margin: 4px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .metric-card {
+                width: 120px;
+                height: 140px;
+                padding: 8px;
+            }
+            
+            .metric-title {
+                font-size: 0.9rem;
+                margin-bottom: 2px;
+            }
+            
+            .metric-value {
+                font-size: 1.2rem;
+                margin: 2px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mental-state-container">
+        <div class="top-navigation">
+            <a href="/" class="home-button" title="Back to Home">
+                <i class="fas fa-home"></i>
+            </a>
+        </div>
+        
+        <div class="page-header">
+            <h1>Mental State Analysis</h1>
+            <p>Your emotional metrics based on recent conversations with NATSU AI</p>
+        </div>
+
+        <div class="overall-state">
+            <h2>Current Mental State: <span id="primary-state">Loading...</span></h2>
+        </div>
+
+        <div class="metrics-summary">
+            <h3>Summary</h3>
+            <p id="summary-text">Loading summary...</p>
+        </div>
+
+        <div class="mental-metrics" id="metrics-container">
+            <!-- Metrics cards will be generated here -->
+        </div>
+
+        <div class="timestamp" id="last-updated">
+            Last updated: Loading...
+        </div>
+
+        <a href="/" class="back-button">Back to Home</a>
+    </div>
+
+    <!-- Use the correct gauge.js library -->
+    <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Fetch emotional metrics from the API
+            fetchEmotionalMetrics();
+
+            // Function to fetch emotional metrics
+            async function fetchEmotionalMetrics() {
+                try {
+                    const response = await fetch('/api/mental-state');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch emotional metrics');
+                    }
+                    
+                    const data = await response.json();
+                    if (!data || !data.metrics || data.metrics.length === 0) {
+                        displayError('No emotional metrics available');
+                        return;
+                    }
+                    
+                    // Display the metrics
+                    displayMetrics(data.metrics[0]);
+                    
+                    // Determine and display primary emotional state
+                    determinePrimaryState(data.metrics[0]);
+                    
+                    // Update last updated timestamp
+                    if (data.last_updated) {
+                        document.getElementById('last-updated').textContent = 
+                            `Last updated: ${new Date(data.last_updated).toLocaleString()}`;
+                    }
+                } catch (error) {
+                    console.error('Error fetching emotional metrics:', error);
+                    displayError(error.message);
+                }
+            }
+
+            // Function to display metrics
+            function displayMetrics(metrics) {
+                const container = document.getElementById('metrics-container');
+                container.innerHTML = ''; // Clear previous content
+                
+                // Create cards for each emotion metric
+                const emotionalMetrics = metrics.emotional_metrics;
+                
+                // Define metric details for display
+                const metricDetails = {
+                    happiness: {
+                        title: 'Happiness',
+                        color: '#4CAF50',
+                        description: 'Level of positive emotions and contentment'
+                    },
+                    sadness: {
+                        title: 'Sadness',
+                        color: '#2196F3',
+                        description: 'Level of melancholy or unhappiness'
+                    },
+                    anxiety: {
+                        title: 'Anxiety',
+                        color: '#FF9800',
+                        description: 'Level of worry or nervousness'
+                    },
+                    calmness: {
+                        title: 'Calmness',
+                        color: '#9C27B0',
+                        description: 'Level of peace and tranquility'
+                    },
+                    loneliness: {
+                        title: 'Loneliness',
+                        color: '#795548',
+                        description: 'Feeling of isolation or disconnection'
+                    },
+                    engagement: {
+                        title: 'Engagement',
+                        color: '#E91E63',
+                        description: 'Level of interest and participation'
+                    }
+                };
+                
+                // Only display the emotional metrics (skip core metrics)
+                for (const [key, value] of Object.entries(emotionalMetrics)) {
+                    if (metricDetails[key]) {
+                        createMetricCard(
+                            metricDetails[key].title,
+                            value,
+                            metricDetails[key].color,
+                            metricDetails[key].description,
+                            container
+                        );
+                    }
+                }
+                
+                // Generate and display summary
+                generateSummary(metrics);
+            }
+
+            // Function to create a metric card with color-coded numerical value
+            function createMetricCard(title, value, color, description, container) {
+                // Create card element
+                const card = document.createElement('div');
+                card.className = 'metric-card';
+                
+                // Create title
+                const titleElem = document.createElement('div');
+                titleElem.className = 'metric-title';
+                titleElem.textContent = title;
+                
+                // Get percentage value
+                const percentValue = Math.round(value * 100);
+                
+                // Create value display container
+                const valueContainer = document.createElement('div');
+                valueContainer.className = 'metric-value-container';
+                
+                // Create value display
+                const valueElem = document.createElement('div');
+                valueElem.className = 'metric-value';
+                valueElem.textContent = percentValue + '%';
+                
+                // Determine color based on value and emotion type
+                let valueColor;
+                if (title === 'Happiness' || title === 'Calmness' || title === 'Engagement') {
+                    // For positive emotions (higher is better)
+                    if (percentValue >= 70) valueColor = '#4CAF50'; // Green (good)
+                    else if (percentValue >= 40) valueColor = '#FFC107'; // Yellow (moderate)
+                    else valueColor = '#F44336'; // Red (concerning)
+                } else {
+                    // For negative emotions (lower is better)
+                    if (percentValue <= 30) valueColor = '#4CAF50'; // Green (good)
+                    else if (percentValue <= 60) valueColor = '#FFC107'; // Yellow (moderate)
+                    else valueColor = '#F44336'; // Red (concerning)
+                }
+                
+                // Apply color and styling to value
+                valueElem.style.color = valueColor;
+                valueElem.style.fontSize = '2.2rem';
+                valueElem.style.fontWeight = 'bold';
+                valueElem.style.margin = '20px 0';
+                valueElem.style.textShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                
+                // Add value indicator bars
+                const barContainer = document.createElement('div');
+                barContainer.className = 'value-bar-container';
+                barContainer.style.width = '80%';
+                barContainer.style.height = '8px';
+                barContainer.style.backgroundColor = '#f0f0f0';
+                barContainer.style.borderRadius = '4px';
+                barContainer.style.overflow = 'hidden';
+                
+                const progressBar = document.createElement('div');
+                progressBar.className = 'value-progress-bar';
+                progressBar.style.width = `${percentValue}%`;
+                progressBar.style.height = '100%';
+                progressBar.style.backgroundColor = valueColor;
+                
+                barContainer.appendChild(progressBar);
+                valueContainer.appendChild(valueElem);
+                valueContainer.appendChild(barContainer);
+                
+                // Add elements to card
+                card.appendChild(titleElem);
+                card.appendChild(valueContainer);
+                
+                // Add card to container
+                container.appendChild(card);
+            }
+
+            // Function to generate a summary based on metrics
+            function generateSummary(metrics) {
+                const emotions = metrics.emotional_metrics;
+                const summaryElem = document.getElementById('summary-text');
+                
+                // Find the dominant emotions (top 2)
+                const sortedEmotions = Object.entries(emotions)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 2);
+                
+                // Generate summary text based on dominant emotions
+                let summaryText = '';
+                
+                // Check valence (positive/negative)
+                if (metrics.valence > 0.6) {
+                    summaryText += 'Your recent conversations show a generally positive emotional state. ';
+                } else if (metrics.valence < 0.4) {
+                    summaryText += 'Your recent conversations suggest you might be experiencing some challenging emotions. ';
+                } else {
+                    summaryText += 'Your emotional state appears balanced based on recent conversations. ';
+                }
+                
+                // Add information about dominant emotions
+                summaryText += 'The most notable emotions detected are ';
+                sortedEmotions.forEach(([emotion, value], index) => {
+                    const emotionName = emotion.charAt(0).toUpperCase() + emotion.slice(1);
+                    summaryText += `${emotionName} (${Math.round(value * 100)}%)`;
+                    if (index === 0 && sortedEmotions.length > 1) {
+                        summaryText += ' and ';
+                    }
+                });
+                summaryText += '. ';
+                
+                // Add recommendation based on trust and engagement
+                if (metrics.trust < 0.4) {
+                    summaryText += 'You may benefit from more open conversations to build trust. ';
+                } else if (emotions.loneliness > 0.6) {
+                    summaryText += 'Consider activities that help you connect with others to reduce feelings of isolation. ';
+                } else if (emotions.anxiety > 0.6) {
+                    summaryText += 'Try relaxation techniques to help manage feelings of anxiety. ';
+                } else if (emotions.calmness > 0.6) {
+                    summaryText += 'Your conversations reflect a peaceful state of mind. ';
+                }
+                
+                // Add note about the AI
+                summaryText += 'Remember that NATSU AI is here to support your emotional well-being through conversation.';
+                
+                // Set the summary text
+                summaryElem.textContent = summaryText;
+            }
+
+            // Function to determine primary emotional state
+            function determinePrimaryState(metrics) {
+                const emotionalMetrics = metrics.emotional_metrics;
+                const primaryStateElement = document.getElementById('primary-state');
+                
+                // Find the highest emotional metric
+                let highestMetric = '';
+                let highestValue = 0;
+                
+                for (const [metric, value] of Object.entries(emotionalMetrics)) {
+                    if (value > highestValue) {
+                        highestValue = value;
+                        highestMetric = metric;
+                    }
+                }
+                
+                // Map metric to readable state
+                let stateLabel = 'Balanced';
+                
+                // Don't just use the highest metric, use a more nuanced approach
+                if (metrics.valence > 0.6 && emotionalMetrics.happiness > 0.6) {
+                    stateLabel = 'Happy';
+                } else if (metrics.valence < -0.2 && emotionalMetrics.sadness > 0.5) {
+                    stateLabel = 'Sad';
+                } else if (emotionalMetrics.anxiety > 0.6) {
+                    stateLabel = 'Anxious';
+                } else if (emotionalMetrics.calmness > 0.6) {
+                    stateLabel = 'Calm';
+                } else if (emotionalMetrics.loneliness > 0.6) {
+                    stateLabel = 'Lonely';
+                } else if (emotionalMetrics.engagement > 0.7) {
+                    stateLabel = 'Engaged';
+                } else if (metrics.valence > 0.4 && metrics.arousal < 0.3) {
+                    stateLabel = 'Content';
+                } else if (metrics.valence > 0.3 && metrics.arousal > 0.6) {
+                    stateLabel = 'Excited';
+                } else if (metrics.trust > 0.7) {
+                    stateLabel = 'Trusting';
+                }
+                
+                // Set the state label
+                primaryStateElement.textContent = stateLabel;
+                
+                // Style based on emotional state
+                const stateColors = {
+                    'Happy': '#4CAF50',
+                    'Sad': '#2196F3',
+                    'Anxious': '#FF9800',
+                    'Calm': '#9C27B0',
+                    'Lonely': '#795548',
+                    'Engaged': '#E91E63',
+                    'Content': '#00BCD4',
+                    'Excited': '#FFC107',
+                    'Trusting': '#3F51B5',
+                    'Balanced': '#607D8B'
+                };
+                
+                primaryStateElement.style.color = stateColors[stateLabel] || '#1a73e8';
+            }
+
+            // Function to display error message
+            function displayError(message) {
+                const container = document.getElementById('metrics-container');
+                container.innerHTML = `<div class="error-message">Error: ${message}</div>`;
+                
+                const summaryElem = document.getElementById('summary-text');
+                summaryElem.textContent = 'Unable to generate summary due to missing emotional metrics data.';
+            }
+        });
+    </script>
+</body>
+</html> 
