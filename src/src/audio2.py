@@ -21,7 +21,7 @@ import importlib.util
 # --- Configuration and Initialization ---
 
 # Use your hard-coded Deepgram API key
-DEEPGRAM_API_KEY = "f4082955916ed6ca9eacd3fd2c7ae127a1e4516c"
+DEEPGRAM_API_KEY = ""
 deepgram = DeepgramClient(DEEPGRAM_API_KEY)
 filename = "test.mp3"
 
