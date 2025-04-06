@@ -194,7 +194,7 @@ def write_emotion_metrics_to_json(valence, arousal, trust, file_path="user-sense
 # -------------------------------------------------
 if gemini_available:
     try:
-        configure(api_key="AIzaSyDxgwkKSHMBRrPdI0l2R2n7ln-j5slJXfY")
+        configure(api_key="")
         
         # Models for different purposes
         GENERATION_MODEL_NAME = "gemini-2.0-flash-lite"
