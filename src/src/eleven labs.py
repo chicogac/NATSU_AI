@@ -28,8 +28,7 @@ import asyncio
 
 load_dotenv()
 
-ELEVENLABS_API_KEY = 'sk_a50620c06ec84b0dc46ab3fce3281212b941e16e0915d545'
-DEEPGRAM_API_KEY = "f4082955916ed6ca9eacd3fd2c7ae127a1e4516c"
+
 # deepgram = DeepgramClient(DEEPGRAM_API_KEY)
 
 
