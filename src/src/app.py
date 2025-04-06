@@ -108,7 +108,7 @@ rag_enabled = False
 if genai_available:
     try:
         # Configure Google Generative AI
-        api_key = os.environ.get("GOOGLE_API_KEY") or "AIzaSyDxgwkKSHMBRrPdI0l2R2n7ln-j5slJXfY"
+        api_key = os.environ.get("GOOGLE_API_KEY") or ""
         genai.configure(api_key=api_key)
         
         print(f"--- Attempting to load story embeddings from: {EMBEDDINGS_FILE} ---")
