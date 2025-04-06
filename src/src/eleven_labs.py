@@ -30,14 +30,12 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("eleven_labs")
 
 # Constants
-API_KEY = "d7ec9c6eab254747e8a6c20b56a36d5a"  # API key from user
 API_URL = "https://api.elevenlabs.io/v1"
 DEFAULT_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"  # Default voice (Rachel)
 AUDIO_FORMAT = "mp3"  # Output format (mp3, mp3_44100_128, pcm_16000, pcm_22050, pcm_24000, pcm_44100)
 OUTPUT_DIR = tempfile.gettempdir()  # Directory to save audio files
 
 # Remove conflicting API key 
-# ELEVEN_LABS_API_KEY = "sk_4fc509fd5d656cf82a5de6bb245eef2ca293612fe3ac76a7"
 WEBSOCKET_URL = "wss://api.elevenlabs.io/v1/text-to-speech"
 
 # Default voice settings
