@@ -4,7 +4,7 @@ from datetime import datetime
 from google.generativeai import GenerativeModel, configure
 
 # Provide your API key & model
-configure(api_key="AIzaSyDxgwkKSHMBRrPdI0l2R2n7ln-j5slJXfY")
+configure(api_key="")
 model = GenerativeModel("gemini-1.5-flash")
 
 def parse_event_from_text(text):
