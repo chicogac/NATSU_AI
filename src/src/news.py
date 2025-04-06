@@ -8,8 +8,6 @@ import google.generativeai as genai
 import re
 
 # Configuration
-NEWS_API_KEY = "pub_78128b2edc185ec38eda4ad996c901bbeb5c0"  # Replace with your actual key
-GEMINI_API_KEY = "AIzaSyCr2YMNyb9k8DRqGu4ut_VXIoIAe-fCxg4"   # Replace with your actual key
 OUTPUT_DIR = "news_data"
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
 
