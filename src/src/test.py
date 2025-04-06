@@ -112,7 +112,6 @@ class EmotionalProfile:
 # -------------------------------------------------
 # 3. GEMINI SETUP
 # -------------------------------------------------
-configure(api_key="AIzaSyDxgwkKSHMBRrPdI0l2R2n7ln-j5slJXfY")
 model = GenerativeModel("gemini-2.0-flash-lite")
 model_router = GenerativeModel("gemini-1.5-flash")
 
