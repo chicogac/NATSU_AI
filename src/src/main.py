@@ -92,7 +92,7 @@ class EmotionalProfile:
 # 3. GEMINI SETUP & RAG CONFIG
 # -------------------------------------------------
 try:
-    api_key = os.environ.get("GOOGLE_API_KEY") or "AIzaSyDxgwkKSHMBRrPdI0l2R2n7ln-j5slJXfY"
+    api_key = os.environ.get("GOOGLE_API_KEY") or 
     if not api_key:
         api_key = "YOUR_API_KEY_HERE" # !!! REPLACE IF NEEDED !!!
         if not api_key or api_key == "YOUR_API_KEY_HERE": raise ValueError("API Key missing.")
