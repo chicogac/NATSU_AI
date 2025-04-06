@@ -8,7 +8,7 @@ import argparse # For command-line arguments
 
 # --- Configuration ---
 try:
-    api_key = os.environ.get("GOOGLE_API_KEY") or "AIzaSyDxgwkKSHMBRrPdI0l2R2n7ln-j5slJXfY"
+    api_key = os.environ.get("GOOGLE_API_KEY") 
     if not api_key:
         api_key = "YOUR_API_KEY_HERE" # !!! REPLACE WITH YOUR KEY IF NEEDED !!!
         if not api_key or api_key == "YOUR_API_KEY_HERE":
